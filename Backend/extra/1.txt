@@ -1,3 +1,10 @@
+@app.teardown_appcontext
+def cleanup(exception=None):
+    try:
+        os.remove("merged.pdf")
+    except OSError:
+        pass
+//
 from flask import Flask, request, send_file
 from PyPDF2 import PdfMerger
 import io
@@ -22,11 +29,11 @@ def merge_pdfs():
 
     # Add each PDF file to the merger
     for file in files:
-        print(f"Processing file: {file.filename}") 
+        print(f"Processing file: {file.filename}")  
         if file.filename.endswith('.pdf'):
             merger.append(file)
         else:
-            print(f"File {file.filename} is not a PDF") 
+            print(f"File {file.filename} is not a PDF")  
             return f"File {file.filename} is not a PDF", 400
 
     # Create a BytesIO object to store the merged PDF in memory

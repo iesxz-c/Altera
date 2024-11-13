@@ -5,6 +5,8 @@
 
 
 
+subprocess.run([r'C:\Program Files\LibreOffice\program\soffice.exe', '--headless', '--convert-to', 'pdf', temp_docx_path, '--outdir', os.path.dirname(temp_pdf_path)], check=True)
+subprocess.run([r'C:\Program Files\LibreOffice\program\soffice.exe', '--headless', '--convert-to', 'pdf', temp_ppt_path, '--outdir', os.path.dirname(temp_pdf_path)], check=True)
 
 
 

@@ -1,51 +1,71 @@
-@app.teardown_appcontext
-def cleanup(exception=None):
-    try:
-        os.remove("merged.pdf")
-    except OSError:
-        pass
-//
-from flask import Flask, request, send_file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from flask import Flask, request, send_file, jsonify
 from PyPDF2 import PdfMerger
-import io
+import os
 
 app = Flask(__name__)
+output_dir = r"C:\Users\akash\Altera\Backend\output"
 
 @app.route('/merge_pdfs', methods=['POST'])
 def merge_pdfs():
     # Check if files are in the request
     if 'pdfs' not in request.files:
-        print("No files part in the request")  
+        print("No files part in the request")  # Debugging line
         return "No files part in the request", 400
 
     files = request.files.getlist('pdfs')
     
     # Ensure at least two PDFs are provided
     if len(files) < 2:
-        print("Less than two PDF files received")  
+        print("Less than two PDF files received")
         return "Please upload at least two PDF files to merge", 400
 
     merger = PdfMerger()
+    
+    # Create a name for the merged PDF based on the names of the uploaded files
+    file_names = [file.filename for file in files]
+    merged_pdf_name = "_".join(file_names)  # Concatenate names with underscores
+    output_path = os.path.join(output_dir, f"{merged_pdf_name}.pdf")
 
     # Add each PDF file to the merger
     for file in files:
-        print(f"Processing file: {file.filename}")  
+        print(f"Processing file: {file.filename}")
         if file.filename.endswith('.pdf'):
             merger.append(file)
         else:
-            print(f"File {file.filename} is not a PDF")  
+            print(f"File {file.filename} is not a PDF")
             return f"File {file.filename} is not a PDF", 400
 
-    # Create a BytesIO object to store the merged PDF in memory
-    merged_pdf = io.BytesIO()
-    merger.write(merged_pdf)
+    # Save merged PDF to output folder
+    merger.write(output_path)
     merger.close()
-    
-    # Move the pointer to the start of the BytesIO object
-    merged_pdf.seek(0)
 
-    # Send the merged PDF as a response directly from memory
-    return send_file(merged_pdf, as_attachment=True, download_name="merged.pdf", mimetype="application/pdf")
+    print({"message": "PDFs merged successfully", "download_url": f"/download_merged_pdf/{merged_pdf_name}"})
+    return send_file(output_path, as_attachment=True, download_name=f"{merged_pdf_name}.pdf")
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

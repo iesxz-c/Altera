@@ -39,7 +39,8 @@ def merge_pdfs():
     
     merged_pdf.seek(0)
 
-    return send_file(merged_pdf, as_attachment=True, download_name="merged.pdf", mimetype="application/pdf")
+    return send_file(merged_pdf, as_attachment=True, 
+                     download_name="merged.pdf", mimetype="application/pdf")
 
 @app.route('/convert_pdf_to_doc', methods=['POST'])
 def convert_pdf_to_doc():
@@ -68,7 +69,9 @@ def convert_pdf_to_doc():
 # MIME Type: It tells the browser what kind of file is being sent so it knows how to handle it.
 # For DOCX files, the MIME type
 # is application/vnd.openxmlformats-officedocument.wordprocessingml.document
-        return send_file(docx_path, as_attachment=True, download_name="converted.docx", mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+        return send_file(docx_path, as_attachment=True,
+                         download_name="converted.docx",
+                         mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
 
     return "Invalid file format", 400
 
@@ -102,7 +105,8 @@ def convert_doc_to_pdf():
                 pdf_data = io.BytesIO(pdf_file.read())
 
             pdf_data.seek(0)
-            return send_file(pdf_data, as_attachment=True, download_name="converted.pdf", mimetype="application/pdf")
+            return send_file(pdf_data, as_attachment=True, download_name=
+                             "converted.pdf", mimetype="application/pdf")
 
         finally:
             os.remove(temp_docx_path)
@@ -136,7 +140,9 @@ def merge_docs():
     merged_doc.save(merged_doc_io)
     merged_doc_io.seek(0)
 
-    return send_file(merged_doc_io, as_attachment=True, download_name="merged_document.docx", mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+    return send_file(merged_doc_io, as_attachment=True, download_name=
+                     "merged_document.docx", mimetype=
+                     "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
 
 @app.route('/convert_images_to_pdf', methods=['POST'])
 def convert_images_to_pdf():
@@ -158,7 +164,9 @@ def convert_images_to_pdf():
     image_list[0].save(pdf_output, "PDF", save_all=True, append_images=image_list[1:])
     
     pdf_output.seek(0)
-    return send_file(pdf_output, as_attachment=True, download_name="converted_images.pdf", mimetype="application/pdf")
+    return send_file(pdf_output, as_attachment=True,
+                     download_name="converted_images.pdf", 
+                     mimetype="application/pdf")
 
 @app.route('/convert_pdf_to_images', methods=['POST'])
 def convert_pdf_to_images():
@@ -175,7 +183,8 @@ def convert_pdf_to_images():
         pdf_data = file.read()
         
         # Create a temporary file to save the uploaded PDF
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp_pdf:
+        with tempfile.NamedTemporaryFile(delete=False,
+                                         suffix='.pdf') as tmp_pdf:
             tmp_pdf.write(pdf_data)
             tmp_pdf_path = tmp_pdf.name  # Store the path of the temporary file
 
@@ -187,6 +196,7 @@ def convert_pdf_to_images():
             zip_filename = "pdf_images.zip"
             zip_buffer = io.BytesIO()
 
+
             with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zipf:
                 for i, image in enumerate(images):
                     img_byte_arr = io.BytesIO()
@@ -195,7 +205,9 @@ def convert_pdf_to_images():
                     zipf.writestr(f"page_{i + 1}.png", img_byte_arr.read())
 
             zip_buffer.seek(0)
-            return send_file(zip_buffer, as_attachment=True, download_name=zip_filename, mimetype="application/zip")
+            return send_file(zip_buffer, as_attachment=True, 
+                             download_name=zip_filename,
+                             mimetype="application/zip")
         
         except Exception as e:
             return f"Error converting PDF: {str(e)}", 500
@@ -242,7 +254,9 @@ def convert_ppt_to_pdf():
         temp_pdf_path.seek(0)
 
         # Send the PDF file back to the client
-        return send_file(temp_pdf_path, as_attachment=True, download_name="converted.pdf", mimetype="application/pdf")
+        return send_file(temp_pdf_path, as_attachment=True,
+                         download_name="converted.pdf",
+                         mimetype="application/pdf")
 
     except subprocess.CalledProcessError as e:
         return f"Error converting PowerPoint to PDF: {e}", 500
@@ -283,7 +297,10 @@ def convert_pdf_to_ppt():
         img_stream.seek(0)
 
         # Add the image to the slide
-        slide.shapes.add_picture(img_stream, Inches(0), Inches(0), width=Inches(10), height=Inches(7.5))  # Adjust size as needed
+        slide.shapes.add_picture(img_stream, 
+                                 Inches(0), Inches(0), 
+                                 width=Inches(10), 
+                                 height=Inches(7.5))  # Adjust size as needed
 
     # Save the PowerPoint file to an in-memory buffer
     ppt_output = io.BytesIO()
@@ -294,7 +311,10 @@ def convert_pdf_to_ppt():
     os.remove(temp_pdf_path)
 
     # Send the PowerPoint file as a download
-    return send_file(ppt_output, as_attachment=True, download_name="converted.pptx", mimetype="application/vnd.openxmlformats-officedocument.presentationml.presentation")
+    return send_file(ppt_output, as_attachment=True,
+                     download_name="converted.pptx",
+                     mimetype=
+                     "application/vnd.openxmlformats-officedocument.presentationml.presentation")
 
 
 

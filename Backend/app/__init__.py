@@ -1,7 +1,8 @@
 from flask import Flask
+from flask_cors import CORS
 
 app = Flask(__name__)
-
+CORS(app, origins=['http://localhost:5173'])
 from .pdf_routes import pdf_bp
 from .doc_routes import doc_bp
 from .image_routes import image_bp

@@ -5,6 +5,7 @@ import Layout from './components/Layout';
 import MergePDFs from './Pages/MergePDFs'
 import MergeDocs from './Pages/MergeDocs';
 import ConvertImagesToPdf from './Pages/ConvertImagesToPdf';
+import PdfToImages from './Pages/PdfToImages';
 const App = () => {
   return (
     <>
@@ -15,6 +16,7 @@ const App = () => {
           <Route path="/merge-pdf" element={<MergePDFs/>}/>
           <Route path="/merge-docs" element={<MergeDocs/>}/>
           <Route path="/images-to-pdf" element={<ConvertImagesToPdf/>}/>
+          <Route path="/pdf-to-images" element={<PdfToImages/>}/>
         </Route>
       </Routes>
     </>

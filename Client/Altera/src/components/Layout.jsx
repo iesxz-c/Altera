@@ -48,9 +48,9 @@ const Layout = () => {
           Altera
         </Text>
 
-        {/* Menu and buttons */}
+
         <Flex gap="4" align="center">
-          {/* Tools Dropdown */}
+
           <Menu isOpen={isOpen}>
             <MenuButton
               as={Button}

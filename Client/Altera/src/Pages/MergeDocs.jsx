@@ -14,10 +14,10 @@ import {
   Heading,
   Spinner,
 } from '@chakra-ui/react';
-import { FaGoogleDrive, FaDropbox, FaFilePdf } from 'react-icons/fa';
+import { FaFileWord, FaDropbox, FaGoogleDrive } from 'react-icons/fa';
 import axios from 'axios';
 
-const MergePDFs = () => {
+const MergeDocs = () => {
   const [files, setFiles] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isFileSelected, setIsFileSelected] = useState(false);
@@ -52,7 +52,7 @@ const MergePDFs = () => {
     if (!files || files.length < 2) {
       toast({
         title: 'Error',
-        description: 'Please upload at least two PDF files.',
+        description: 'Please upload at least two .docx files.',
         status: 'error',
         duration: 3000,
         isClosable: true,
@@ -61,13 +61,13 @@ const MergePDFs = () => {
     }
 
     const formData = new FormData();
-    Array.from(files).forEach((file) => formData.append('pdfs', file));
+    Array.from(files).forEach((file) => formData.append('docs', file));
 
     setLoading(true);
 
     try {
       const response = await axios.post(
-        'http://localhost:5000/merge_pdfs',
+        'http://localhost:5000/merge_docs',
         formData,
         { responseType: 'blob' }
       );
@@ -75,13 +75,13 @@ const MergePDFs = () => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'merged.pdf');
+      link.setAttribute('download', 'merged.docx');
       document.body.appendChild(link);
       link.click();
 
       toast({
         title: 'Success',
-        description: 'PDFs merged successfully!',
+        description: 'Docs merged successfully!',
         status: 'success',
         duration: 3000,
         isClosable: true,
@@ -89,7 +89,7 @@ const MergePDFs = () => {
     } catch (error) {
       toast({
         title: 'Error',
-        description: 'Failed to merge PDFs.',
+        description: 'Failed to merge Docs.',
         status: 'error',
         duration: 3000,
         isClosable: true,
@@ -102,13 +102,12 @@ const MergePDFs = () => {
   return (
     <Container maxW="lg" centerContent mt="50px">
       <VStack spacing={8} w="100%" textAlign="center" p={6} borderRadius="lg" shadow="xl" bg="white" maxW="800px">
-        <Heading as="h1" size="xl" fontWeight="extrabold" color=".600" letterSpacing={1.5}>
-          Merge PDFs
+        <Heading as="h1" size="xl" fontWeight="extrabold" color="black.600" letterSpacing={1.5}>
+          Merge Documents
         </Heading>
         <Text color="gray.600" fontSize="lg" mb={4} fontStyle="italic">
-          Combine PDFs easily with the most user-friendly merger tool available.
+          Easily combine DOCX files with the most user-friendly merger tool available.
         </Text>
-
 
         {!isFileSelected && (
           <Box
@@ -123,7 +122,7 @@ const MergePDFs = () => {
           >
             <FormControl>
               <FormLabel htmlFor="file-upload" fontWeight="semibold" fontSize="lg" color="gray.700">
-                Choose PDF Files to Merge
+                Choose DOCX Files to Merge
               </FormLabel>
               <Flex align="center" justify="space-between" direction={{ base: 'column', md: 'row' }} gap={4}>
                 <Button
@@ -143,7 +142,7 @@ const MergePDFs = () => {
                   id="file-upload"
                   type="file"
                   multiple
-                  accept=".pdf"
+                  accept=".docx"
                   display="none"
                   onChange={handleFileChange}
                 />
@@ -199,7 +198,6 @@ const MergePDFs = () => {
           </Box>
         )}
 
-        {/* Merge PDFs button */}
         {isFileSelected && (
           <Button
             onClick={handleMerge}
@@ -213,11 +211,11 @@ const MergePDFs = () => {
             boxShadow="lg"
             _hover={{ bg: 'red.500' }}
             _active={{ bg: 'red.600' }}
-            leftIcon={<FaFilePdf />}
+            leftIcon={<FaFileWord />}
             fontWeight="bold"
             borderRadius="lg"
           >
-            {loading ? <Spinner size="lg" /> : 'Merge PDFs'}
+            {loading ? <Spinner size="lg" /> : 'Merge DOCX Files'}
           </Button>
         )}
       </VStack>
@@ -225,4 +223,4 @@ const MergePDFs = () => {
   );
 };
 
-export default MergePDFs;
+export default MergeDocs;

@@ -100,12 +100,12 @@ const MergeDocs = () => {
   };
 
   return (
-    <Container maxW="lg" centerContent mt="50px">
+    <Container maxW="xl" centerContent mt="50px">
       <VStack spacing={8} w="100%" textAlign="center" p={6} borderRadius="lg" shadow="xl" bg="white" maxW="800px">
         <Heading as="h1" size="xl" fontWeight="extrabold" color="black.600" letterSpacing={1.5}>
           Merge Documents
         </Heading>
-        <Text color="gray.600" fontSize="lg" mb={4} fontStyle="italic">
+        <Text color="gray.600" fontSize="md" mb={4} fontStyle="italic">
           Easily combine DOCX files with the most user-friendly merger tool available.
         </Text>
 
@@ -188,9 +188,9 @@ const MergeDocs = () => {
             <Heading as="h4" size="md" fontWeight="semibold" color="gray.700" mb={4}>
               Selected Files:
             </Heading>
-            <VStack align="start">
+            <VStack align="center">
               {Array.from(files).map((file, index) => (
-                <Text key={index} fontSize="lg" color="gray.600" fontWeight="medium">
+                <Text key={index} fontSize="sm" color="gray.600" fontWeight="medium">
                   {file.name}
                 </Text>
               ))}
@@ -206,7 +206,8 @@ const MergeDocs = () => {
             isDisabled={loading}
             isLoading={loading}
             loadingText="Merging"
-            width="full"
+            width={300}
+            height={75}
             mt={6}
             boxShadow="lg"
             _hover={{ bg: 'red.500' }}

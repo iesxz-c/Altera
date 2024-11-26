@@ -34,7 +34,7 @@ const Home = () => {
     <Box bg="gray.50" minH="100vh">
       <Box textAlign="center" p="8">
         <Heading as="h1" size="2xl" mb="4" color="gray.700">
-          Every tool you need to work with PDFs in one place
+          You Say Documents  We Hear Altera
         </Heading>
         <Text fontSize="lg" color="gray.600">
           Merge, split, compress, convert, and more with just a few clicks.

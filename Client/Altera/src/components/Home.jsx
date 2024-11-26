@@ -84,7 +84,7 @@ const App = () => {
             </MenuList>
           </Menu>
 
-          {/* Login and Sign Up Buttons */}
+        
           <Button leftIcon={<FaSignInAlt />} colorScheme="teal" variant="ghost" onClick={() => navigate('/login')}>
             Login
           </Button>

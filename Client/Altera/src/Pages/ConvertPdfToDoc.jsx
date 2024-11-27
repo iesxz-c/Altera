@@ -11,6 +11,8 @@ import {
   Box,
   IconButton,
   Flex,
+  FormControl,
+  FormLabel,
   Tooltip,
 } from '@chakra-ui/react';
 import { FaGoogleDrive, FaDropbox, FaFileWord } from 'react-icons/fa';
@@ -19,13 +21,19 @@ import axios from 'axios';
 const ConvertPdfToDoc = () => {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [usingDriveOrDropbox, setUsingDriveOrDropbox] = useState(false); 
   const toast = useToast();
 
   const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setUsingDriveOrDropbox(false); 
+    }
   };
 
   const handleGoogleDriveSelect = () => {
+    setUsingDriveOrDropbox(true); 
     toast({
       title: 'Google Drive',
       description: 'This feature is under development.',
@@ -36,6 +44,7 @@ const ConvertPdfToDoc = () => {
   };
 
   const handleDropboxSelect = () => {
+    setUsingDriveOrDropbox(true); 
     toast({
       title: 'Dropbox',
       description: 'This feature is under development.',
@@ -57,7 +66,7 @@ const ConvertPdfToDoc = () => {
       return;
     }
 
-    if (!file.name.endsWith('.pdf')) {
+    if (!file.name.toLowerCase().endsWith('.pdf')) {
       toast({
         title: 'Error',
         description: 'Only PDF files are supported.',
@@ -77,7 +86,7 @@ const ConvertPdfToDoc = () => {
       const response = await axios.post(
         'http://localhost:5000/convert_pdf_to_doc',
         formData,
-        { responseType: 'blob' } // Ensures we handle binary data
+        { responseType: 'blob' }
       );
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -108,88 +117,138 @@ const ConvertPdfToDoc = () => {
   };
 
   return (
-    <Container maxW="lg" centerContent mt="50px">
+    <Container maxW="xl" centerContent mt="50px">
       <VStack
-        spacing={6}
+        spacing={8}
         w="100%"
         textAlign="center"
         p={6}
         borderRadius="lg"
         shadow="xl"
         bg="white"
-        maxW="500px"
+        maxW="800px"
       >
-        <Heading as="h1" size="xl" color="teal.600">
+        <Heading as="h1" size="xl" fontWeight="extrabold" color="black.600" letterSpacing={1.5}>
           Convert PDF to DOCX
         </Heading>
-        <Text color="gray.600" fontSize="md">
+        <Text color="gray.600" fontSize="md" mb={4} fontStyle="italic">
           Upload a PDF file and convert it to a Word document instantly!
         </Text>
 
-        {!file && (
-          <Box w="100%" textAlign="center">
-            <Input
-              type="file"
-              accept=".pdf"
-              onChange={handleFileChange}
-              size="lg"
-              borderRadius="md"
-              variant="outline"
-            />
+        {!file && !usingDriveOrDropbox && (
+          <Box
+            w="100%"
+            p={6}
+            borderRadius="md"
+            shadow="lg"
+            bg="gray.50"
+            borderWidth="1px"
+            transition="all 0.3s ease-in-out"
+            _hover={{ bg: 'gray.100' }}
+          >
+            <FormControl>
+              <FormLabel htmlFor="file-upload" fontWeight="semibold" fontSize="lg" color="gray.700">
+                Choose PDF to Convert
+              </FormLabel>
+              <Flex align="center" justify="space-between" direction={{ base: 'column', md: 'row' }} gap={4}>
+                <Button
+                  as="label"
+                  htmlFor="file-upload"
+                  colorScheme="teal"
+                  size="lg"
+                  variant="solid"
+                  width={{ base: 'full', md: 'auto' }}
+                  _hover={{ bg: 'teal.500' }}
+                  _active={{ bg: 'teal.600' }}
+                  boxShadow="lg"
+                >
+                  Select File
+                </Button>
+                <Input
+                  id="file-upload"
+                  type="file"
+                  accept=".pdf"
+                  display="none"
+                  onChange={handleFileChange}
+                />
+              </Flex>
+            </FormControl>
           </Box>
+        )}
+
+        {!file && !usingDriveOrDropbox && (
+          <Flex gap={4} justify="center" mt={4}>
+            <Tooltip label="Select from Google Drive" aria-label="Google Drive">
+              <IconButton
+                aria-label="Select from Google Drive"
+                icon={<FaGoogleDrive />}
+                colorScheme="blue"
+                size="lg"
+                onClick={handleGoogleDriveSelect}
+                _hover={{ bg: 'blue.500' }}
+                _active={{ bg: 'blue.600' }}
+                boxSize="50px"
+                fontSize="2xl"
+                boxShadow="lg"
+              />
+            </Tooltip>
+
+            <Tooltip label="Select from Dropbox" aria-label="Dropbox">
+              <IconButton
+                aria-label="Select from Dropbox"
+                icon={<FaDropbox />}
+                colorScheme="purple"
+                size="lg"
+                onClick={handleDropboxSelect}
+                _hover={{ bg: 'purple.500' }}
+                _active={{ bg: 'purple.600' }}
+                boxSize="50px"
+                fontSize="2xl"
+                boxShadow="lg"
+              />
+            </Tooltip>
+          </Flex>
         )}
 
         {file && (
-          <Box w="100%" textAlign="center">
-            <Text mt={2} fontSize="sm" color="gray.500">
-              Selected file: {file.name}
+          <Box
+            w="100%"
+            p={6}
+            mt={6}
+            borderRadius="md"
+            shadow="lg"
+            bg="gray.50"
+            borderWidth="1px"
+            transition="all 0.3s ease-in-out"
+            _hover={{ bg: 'gray.100' }}
+          >
+            <Heading as="h4" size="md" fontWeight="semibold" color="gray.700" mb={4}>
+              Selected File:
+            </Heading>
+            <Text fontSize="sm" color="gray.600" fontWeight="medium">
+              {file.name}
             </Text>
           </Box>
         )}
-
-        <Flex gap={4} justify="center" mt={4}>
-          <Tooltip label="Select from Google Drive" aria-label="Google Drive">
-            <IconButton
-              aria-label="Select from Google Drive"
-              icon={<FaGoogleDrive />}
-              colorScheme="blue"
-              size="lg"
-              onClick={handleGoogleDriveSelect}
-              _hover={{ bg: 'blue.500' }}
-              _active={{ bg: 'blue.600' }}
-              boxSize="50px"
-              fontSize="2xl"
-            />
-          </Tooltip>
-
-          <Tooltip label="Select from Dropbox" aria-label="Dropbox">
-            <IconButton
-              aria-label="Select from Dropbox"
-              icon={<FaDropbox />}
-              colorScheme="purple"
-              size="lg"
-              onClick={handleDropboxSelect}
-              _hover={{ bg: 'purple.500' }}
-              _active={{ bg: 'purple.600' }}
-              boxSize="50px"
-              fontSize="2xl"
-            />
-          </Tooltip>
-        </Flex>
 
         <Button
           onClick={handleConvert}
           isLoading={loading}
           loadingText="Converting"
-          colorScheme="teal"
+          colorScheme="red"
           size="lg"
-          w="100%"
-          disabled={loading || !file}
+          width={300}
+          height={75}
+          mt={6}
+          boxShadow="lg"
+          _hover={{ bg: 'red.500' }}
+          _active={{ bg: 'red.600' }}
           leftIcon={<FaFileWord />}
-          _hover={{ bg: 'teal.500' }}
-          _active={{ bg: 'teal.600' }}
+          fontWeight="bold"
+          borderRadius="lg"
+          isDisabled={loading || !file}
         >
-          {loading ? <Spinner size="md" /> : 'Convert to DOCX'}
+          {loading ? <Spinner size="lg" /> : 'Convert to DOCX'}
         </Button>
       </VStack>
     </Container>

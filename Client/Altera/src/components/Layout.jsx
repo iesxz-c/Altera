@@ -24,7 +24,7 @@ const tools = [
   { name: 'PDF to Images', description: 'Convert PDFs into images.', icon: FaFilePdf, path: '/pdf-to-images' },
   { name: 'Images to PDF', description: 'Convert images into PDF format.', icon: FaFilePdf, path: '/images-to-pdf' },
   { name: 'PowerPoint to PDF', description: 'Convert PowerPoint presentations into PDF format.', icon: FaFilePowerpoint, path: '/powerpoint-to-pdf' },
-  { name: 'OCR PDF', description: 'Extract text from scanned PDFs using OCR technology.', icon: FaFilePdf, path: '/ocr-pdf' },
+  { name: 'OCR PDF', description: 'Extract text from PDFs using OCR.', icon: FaFilePdf, path: '/ocr-pdf' },
 ];
 const Layout = () => {
   const [isOpen, setIsOpen] = useState(false);

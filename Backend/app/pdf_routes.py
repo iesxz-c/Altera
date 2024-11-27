@@ -8,8 +8,10 @@ import fitz
 from PIL import Image
 import pytesseract
 from io import BytesIO
+from reportlab.pdfgen import canvas
 
 pdf_bp = Blueprint("pdf",__name__)
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 @pdf_bp.route('/merge_pdfs', methods=['POST'])
 def merge_pdfs():
@@ -72,6 +74,8 @@ def convert_pdf_to_doc():
     return "Invalid file format", 400
 
 
+
+
 @pdf_bp.route('/api/ocr', methods=['POST'])
 def ocr():
     if 'file' not in request.files:
@@ -81,47 +85,57 @@ def ocr():
     if file.filename == '':
         return jsonify({'error': 'No file selected'}), 400
 
-    # Check if the file is a PDF by checking the extension
+
     if '.' not in file.filename or file.filename.rsplit('.', 1)[1].lower() != 'pdf':
         return jsonify({'error': 'Allowed file type is: pdf'}), 400
 
     try:
-        # Read the uploaded PDF file into memory
+
         pdf_data = file.read()
 
-        # Process the PDF and add OCR results
-        pdf_output = add_ocr_to_pdf(BytesIO(pdf_data))
 
-        # Send the PDF back with OCR embedded
-        return send_file(pdf_output, as_attachment=True, download_name='ocr_pdf.pdf', mimetype='application/pdf')
+        extracted_text = extract_text_from_pdf(BytesIO(pdf_data))
+
+        new_pdf = create_pdf_with_text(extracted_text)
+
+        return send_file(new_pdf, as_attachment=True, download_name='text_extracted.pdf', mimetype='application/pdf')
 
     except Exception as e:
         return jsonify({'error': f"Error processing file: {str(e)}"}), 500
 
 
-# Function to perform OCR and embed results into the original PDF
-def add_ocr_to_pdf(pdf_stream):
-    # Open the original PDF
-    pdf_document = fitz.open(stream=pdf_stream, filetype="pdf")
+def extract_text_from_pdf(pdf_stream):
 
-    # Iterate over each page in the PDF
+  
+    pdf_document = fitz.open(stream=pdf_stream, filetype="pdf")
+    extracted_text = ""
+
     for page_num in range(pdf_document.page_count):
         page = pdf_document.load_page(page_num)
 
-        # Render the page to an image (pixmap)
         pix = page.get_pixmap()
 
-        # Convert the pixmap to a PIL Image for OCR processing
-        img = Image.open(BytesIO(pix.tobytes("png")))  # Specify image format 'png' for PIL
+        img = Image.open(BytesIO(pix.tobytes("png")))
         ocr_text = pytesseract.image_to_string(img)
 
-        # Add the OCR text to the page as hidden annotations (not visible)
-        page.insert_text((72, 72), ocr_text, fontsize=8, color=(1, 1, 1), rotate=0, overlay=True)
+        extracted_text += f"Page {page_num + 1}:\n{ocr_text}\n\n"
 
-    # Save the PDF with embedded OCR to a BytesIO object
+    return extracted_text
+
+
+def create_pdf_with_text(text):
+ 
     pdf_output = BytesIO()
-    pdf_document.save(pdf_output)
+    c = canvas.Canvas(pdf_output)
 
-    # Reset the pointer of the BytesIO object to the beginning before sending it
-    pdf_output.seek(0)
+    y_position = 800  
+    for line in text.splitlines():
+        if y_position < 50:
+            c.showPage()  
+            y_position = 800
+        c.drawString(50, y_position, line)
+        y_position -= 15  
+
+    c.save()
+    pdf_output.seek(0)  
     return pdf_output

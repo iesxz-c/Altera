@@ -91,7 +91,7 @@ const Layout = () => {
             leftIcon={<FaUserPlus />}
             colorScheme="red"
             variant="ghost"
-            onClick={() => navigate('/sign-up')}
+            onClick={() => navigate('/signup')}
           >
             Sign Up
           </Button>

@@ -95,7 +95,7 @@ const OcrPdfToText = () => {
   return (
     <Container maxW="xl" centerContent mt="50px">
       <VStack spacing={8} w="100%" textAlign="center" p={6} borderRadius="lg" shadow="xl" bg="white">
-        <Heading as="h1" size="xl" fontWeight="extrabold" color="teal.600" letterSpacing={1.5}>
+        <Heading as="h1" size="xl" fontWeight="extrabold" color="black.600" letterSpacing={1.5}>
           OCR PDF to Extracted Text
         </Heading>
         <Text color="gray.600" fontSize="md" mb={4} fontStyle="italic">

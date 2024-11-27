@@ -8,6 +8,7 @@ import ConvertImagesToPdf from './Pages/ConvertImagesToPdf';
 import PdfToImages from './Pages/PdfToImages';
 import ConvertDocToPdf from './Pages/ConvertDocToPdf';
 import ConvertPdfToDoc from './Pages/ConvertPdfToDoc';
+import ConvertPptToPdf from './Pages/ConvertPptToPdf';
 const App = () => {
   return (
     <>
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="/pdf-to-images" element={<PdfToImages/>}/>
           <Route path="/docs-to-pdf" element={<ConvertDocToPdf/>}/>
           <Route path="/pdf-to-doc" element={<ConvertPdfToDoc/>}/>
+          <Route path="/powerpoint-to-pdf" element={<ConvertPptToPdf/>}/>
         </Route>
       </Routes>
     </>

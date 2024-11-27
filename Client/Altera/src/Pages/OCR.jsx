@@ -167,14 +167,14 @@ const OcrPdfToText = () => {
           onClick={handleConvert}
           isLoading={loading}
           loadingText="Processing"
-          colorScheme="teal"
+          colorScheme="red"
           size="lg"
           width={300}
           height={75}
           mt={6}
           boxShadow="lg"
-          _hover={{ bg: 'teal.500' }}
-          _active={{ bg: 'teal.600' }}
+          _hover={{ bg: 'red.500' }}
+          _active={{ bg: 'red.600' }}
           leftIcon={<FaDownload />}
           fontWeight="bold"
           borderRadius="lg"
